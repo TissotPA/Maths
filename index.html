@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Révisions Maths</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                packages: {'[+]': ['base', 'ams', 'amsmath', 'amssymb', 'newcommand', 'array', 'colortbl']},
+                processEscapes: true,
+                processEnvironments: true,
+                tags: 'ams'
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- En-tête -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-graduation-cap"></i> Révisions Maths</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="previewToggleBtn" title="Activer/désactiver la prévisualisation automatique">
+                        <i class="fas fa-eye"></i> Aperçu
+                    </button>
+                    <button class="btn btn-secondary" id="searchBtn" title="Rechercher">
+                        <i class="fas fa-search"></i> Rechercher
+                    </button>
+                    <button class="btn btn-secondary" id="favoriteBtn" title="Favoris">
+                        <i class="fas fa-star"></i> Favoris
+                    </button>
+                    <button class="btn btn-secondary" id="exportBtn" title="Exporter les fiches">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <button class="btn btn-secondary" id="importBtn" title="Importer des fiches">
+                        <i class="fas fa-upload"></i> Import
+                    </button>
+                    <button class="btn btn-secondary" id="printBtn" title="Imprimer">
+                        <i class="fas fa-print"></i> Imprimer
+                    </button>
+                    <button class="btn btn-primary" id="addNoteBtn">
+                        <i class="fas fa-plus"></i> Nouvelle fiche
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav">
+            <button class="nav-btn active" data-tab="troisieme">
+                Troisième
+            </button>
+            <button class="nav-btn" data-tab="seconde">
+                Seconde
+            </button>
+            <button class="nav-btn" data-tab="premiere">
+                Première
+            </button>
+            <button class="nav-btn" data-tab="terminale">
+                Terminale
+            </button>
+        </nav>
+
+        <!-- Contenu principal -->
+        <main class="main-content">
+            <!-- Onglet Troisième -->
+            <div class="tab-content active" id="troisieme">
+                <div class="content-header">
+                    <h2>Mathématiques - Troisième</h2>
+                    <p class="description">Fiches de révision pour le programme de mathématiques de 3ème</p>
+                </div>
+
+                <!-- Sous-navigation -->
+                <nav class="sub-nav">
+                    <button class="sub-nav-btn active" data-subtab="troisieme-fiches">Fiches</button>
+                    <button class="sub-nav-btn" data-subtab="troisieme-exercices">Exercices</button>
+                    <button class="sub-nav-btn" data-subtab="troisieme-corrections">Corrections</button>
+                </nav>
+
+                <!-- Contenu des sous-onglets -->
+                <div class="sub-tab-content active" id="troisieme-fiches">
+                    <div class="cards-grid"></div>
+                </div>
+                <div class="sub-tab-content" id="troisieme-exercices">
+                    <div class="cards-grid"></div>
+                </div>
+                <div class="sub-tab-content" id="troisieme-corrections">
+                    <div class="cards-grid"></div>
+                </div>
+            </div>
+
+            <!-- Onglet Seconde -->
+            <div class="tab-content" id="seconde">
+                <div class="content-header">
+                    <h2>Mathématiques - Seconde</h2>
+                    <p class="description">Fiches de révision pour le programme de mathématiques de 2nde</p>
+                </div>
+
+                <!-- Sous-navigation -->
+                <nav class="sub-nav">
+                    <button class="sub-nav-btn active" data-subtab="seconde-fiches">Fiches</button>
+                    <button class="sub-nav-btn" data-subtab="seconde-exercices">Exercices</button>
+                    <button class="sub-nav-btn" data-subtab="seconde-corrections">Corrections</button>
+                </nav>
+
+                <!-- Contenu des sous-onglets -->
+                <div class="sub-tab-content active" id="seconde-fiches">
+                    <div class="cards-grid"></div>
+                </div>
+                <div class="sub-tab-content" id="seconde-exercices">
+                    <div class="cards-grid"></div>
+                </div>
+                <div class="sub-tab-content" id="seconde-corrections">
+                    <div class="cards-grid"></div>
+                </div>
+            </div>
+
+            <!-- Onglet Première -->
+            <div class="tab-content" id="premiere">
+                <div class="content-header">
+                    <h2>Mathématiques - Première</h2>
+                    <p class="description">Fiches de révision pour le programme de mathématiques de 1ère</p>
+                </div>
+
+                <!-- Sous-navigation -->
+                <nav class="sub-nav">
+                    <button class="sub-nav-btn active" data-subtab="premiere-fiches">Fiches</button>
+                    <button class="sub-nav-btn" data-subtab="premiere-exercices">Exercices</button>
+                    <button class="sub-nav-btn" data-subtab="premiere-corrections">Corrections</button>
+                </nav>
+
+                <!-- Contenu des sous-onglets -->
+                <div class="sub-tab-content active" id="premiere-fiches">
+                    <div class="cards-grid"></div>
+                </div>
+                <div class="sub-tab-content" id="premiere-exercices">
+                    <div class="cards-grid"></div>
+                </div>
+                <div class="sub-tab-content" id="premiere-corrections">
+                    <div class="cards-grid"></div>
+                </div>
+            </div>
+
+            <!-- Onglet Terminale -->
+            <div class="tab-content" id="terminale">
+                <div class="content-header">
+                    <h2>Mathématiques - Terminale</h2>
+                    <p class="description">Fiches de révision pour le programme de mathématiques de Terminale</p>
+                </div>
+
+                <!-- Sous-navigation -->
+                <nav class="sub-nav">
+                    <button class="sub-nav-btn active" data-subtab="terminale-fiches">Fiches</button>
+                    <button class="sub-nav-btn" data-subtab="terminale-exercices">Exercices</button>
+                    <button class="sub-nav-btn" data-subtab="terminale-corrections">Corrections</button>
+                </nav>
+
+                <!-- Contenu des sous-onglets -->
+                <div class="sub-tab-content active" id="terminale-fiches">
+                    <div class="cards-grid"></div>
+                </div>
+                <div class="sub-tab-content" id="terminale-exercices">
+                    <div class="cards-grid"></div>
+                </div>
+                <div class="sub-tab-content" id="terminale-corrections">
+                    <div class="cards-grid"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal pour ajouter une nouvelle fiche -->
+    <div id="addCardModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus-circle"></i> Nouvelle fiche de révision</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="addCardForm">
+                    <div class="form-group">
+                        <label for="cardLevel">Niveau</label>
+                        <select id="cardLevel" required>
+                            <option value="">Sélectionner un niveau</option>
+                            <option value="troisieme">Troisième</option>
+                            <option value="seconde">Seconde</option>
+                            <option value="premiere">Première</option>
+                            <option value="terminale">Terminale</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cardTitle">Titre de la fiche</label>
+                        <input type="text" id="cardTitle" placeholder="Ex: Théorème de Pythagore" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cardFormulas">Formules principales</label>
+                        <textarea id="cardFormulas" placeholder="Ex: $a^2 + b^2 = c^2$ pour un triangle rectangle&#10;Utilisez LaTeX : $\frac{a}{b}$, $\sqrt{x}$, $x^2$, etc."></textarea>
+                        <small class="form-help">
+                            <strong>LaTeX :</strong> $formule$ (inline), $$formule$$ (bloc)<br>
+                            <strong>Formatage :</strong> **gras**, *italique*, ++souligné++, ==surligné==, `code`
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cardExamples">Exemples</label>
+                        <textarea id="cardExamples" placeholder="Ex: Si $a = 3$ et $b = 4$, alors $c = \sqrt{3^2 + 4^2} = \sqrt{25} = 5$"></textarea>
+                        <small class="form-help">
+                            <strong>Formatage :</strong> **gras**, *italique*, ++souligné++, ==surligné==, `code` + LaTeX : $formule$
+                        </small>
+                        <div class="image-help">
+                            <strong>Images :</strong><br>
+                            • <strong>Dossier local :</strong> <code>![Description](./Figures/image.png)</code><br>
+                            • <strong>URL :</strong> <code>![Description](https://exemple.com/image.png)</code><br>
+                            <em>Exemple :</em> <code>![Triangle](./Figures/triangle.png "Théorème de Pythagore")</code><br>
+                            <button type="button" class="btn-insert-local" data-target="cardExamples">
+                                <i class="fas fa-folder"></i> Insérer image du dossier Figures
+                            </button>
+                            <button type="button" class="btn-upload-image" data-target="cardExamples">
+                                <i class="fas fa-upload"></i> Intégrer image (base64)
+                            </button>
+                            <input type="file" class="image-file-input" accept="image/*" style="display: none;">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exerciseCount">Nombre d'exercices</label>
+                        <select id="exerciseCount">
+                            <option value="0">Aucun exercice</option>
+                            <option value="1">1 exercice</option>
+                            <option value="2">2 exercices</option>
+                            <option value="3">3 exercices</option>
+                            <option value="4">4 exercices</option>
+                            <option value="5">5 exercices</option>
+                            <option value="6">6 exercices</option>
+                            <option value="7">7 exercices</option>
+                            <option value="8">8 exercices</option>
+                            <option value="9">9 exercices</option>
+                            <option value="10">10 exercices</option>
+                        </select>
+                    </div>
+
+                    <div id="exercisesContainer" style="display: none;">
+                        <!-- Les exercices seront ajoutés dynamiquement ici -->
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancelCard">Annuler</button>
+                        <button type="submit" class="btn btn-primary">Créer la fiche</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour modifier une fiche existante -->
+    <div id="editCardModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Modifier la fiche de révision</h3>
+                <span class="close" id="closeEditModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editCardForm">
+                    <div class="form-group">
+                        <label for="editCardLevel">Niveau</label>
+                        <select id="editCardLevel" required>
+                            <option value="">Sélectionner un niveau</option>
+                            <option value="troisieme">Troisième</option>
+                            <option value="seconde">Seconde</option>
+                            <option value="premiere">Première</option>
+                            <option value="terminale">Terminale</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editCardTitle">Titre de la fiche</label>
+                        <input type="text" id="editCardTitle" placeholder="Ex: Théorème de Pythagore" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editCardFormulas">Formules principales</label>
+                        <textarea id="editCardFormulas" placeholder="Ex: $a^2 + b^2 = c^2$ pour un triangle rectangle&#10;Utilisez LaTeX : $\frac{a}{b}$, $\sqrt{x}$, $x^2$, etc."></textarea>
+                        <small class="form-help">
+                            <strong>LaTeX :</strong> $formule$ (inline), $$formule$$ (bloc)<br>
+                            <strong>Formatage :</strong> **gras**, *italique*, ++souligné++, ==surligné==, `code`
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editCardExamples">Exemples</label>
+                        <textarea id="editCardExamples" placeholder="Ex: Si $a = 3$ et $b = 4$, alors $c = \sqrt{3^2 + 4^2} = \sqrt{25} = 5$"></textarea>
+                        <small class="form-help">
+                            <strong>Formatage :</strong> **gras**, *italique*, ++souligné++, ==surligné==, `code` + LaTeX : $formule$
+                        </small>
+                        <div class="image-help">
+                            <strong>Images :</strong><br>
+                            • <strong>Dossier local :</strong> <code>![Description](./Figures/image.png)</code><br>
+                            • <strong>URL :</strong> <code>![Description](https://exemple.com/image.png)</code><br>
+                            <em>Exemple :</em> <code>![Triangle](./Figures/triangle.png "Théorème de Pythagore")</code><br>
+                            <button type="button" class="btn-insert-local" data-target="editCardExamples">
+                                <i class="fas fa-folder"></i> Insérer image du dossier Figures
+                            </button>
+                            <button type="button" class="btn-upload-image" data-target="editCardExamples">
+                                <i class="fas fa-upload"></i> Intégrer image (base64)
+                            </button>
+                            <input type="file" class="image-file-input" accept="image/*" style="display: none;">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editExerciseCount">Nombre d'exercices</label>
+                        <select id="editExerciseCount">
+                            <option value="0">Aucun exercice</option>
+                            <option value="1">1 exercice</option>
+                            <option value="2">2 exercices</option>
+                            <option value="3">3 exercices</option>
+                            <option value="4">4 exercices</option>
+                            <option value="5">5 exercices</option>
+                            <option value="6">6 exercices</option>
+                            <option value="7">7 exercices</option>
+                            <option value="8">8 exercices</option>
+                            <option value="9">9 exercices</option>
+                            <option value="10">10 exercices</option>
+                        </select>
+                    </div>
+
+                    <div id="editExercisesContainer" style="display: none;">
+                        <!-- Les exercices seront ajoutés dynamiquement ici -->
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancelEditCard">Annuler</button>
+                        <button type="submit" class="btn btn-primary">Modifier la fiche</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour affichage d'image en grand -->
+    <div id="imageModal" class="image-modal">
+        <span class="image-close">&times;</span>
+        <img class="image-modal-content" id="modalImage">
+    </div>
+
+    <!-- Input caché pour l'import de fichier -->
+    <input type="file" id="importFileInput" accept=".json" style="display: none;">
+
+    <!-- Modal pour la recherche -->
+    <div id="searchModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-search"></i> Rechercher une fiche</h3>
+                <span class="close" id="closeSearchModal">&times;</span>
+            </div>
+            <form id="searchForm" class="modal-form">
+                <div class="form-group">
+                    <label for="searchLevel">Niveau</label>
+                    <select id="searchLevel">
+                        <option value="tous">Tous les niveaux</option>
+                        <option value="troisieme">Troisième</option>
+                        <option value="seconde">Seconde</option>
+                        <option value="premiere">Première</option>
+                        <option value="terminale">Terminale</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="searchTitle">Titre (optionnel)</label>
+                    <input type="text" id="searchTitle" placeholder="Rechercher par titre..." autocomplete="off">
+                    <small class="form-help">
+                        Laissez vide pour voir toutes les fiches du niveau sélectionné
+                    </small>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelSearch">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Rechercher</button>
+                </div>
+            </form>
+            
+            <!-- Zone de résultats -->
+            <div id="searchResults" style="display: none;">
+                <h4>Résultats de la recherche</h4>
+                <div id="searchResultsList" class="search-results-list">
+                    <!-- Les résultats seront affichés ici -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour confirmation d'import -->
+    <div id="importModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-upload"></i> Importer des fiches</h3>
+                <span class="close" id="closeImportModal">&times;</span>
+            </div>
+            <div class="modal-form">
+                <div id="importPreview" style="display: none;">
+                    <h4>Aperçu du fichier :</h4>
+                    <div id="importStats" class="import-stats"></div>
+                    <div class="form-group">
+                        <label>
+                            <input type="radio" name="importMode" value="merge" checked>
+                            <strong>Fusionner</strong> - Ajouter les nouvelles fiches en conservant les existantes
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="radio" name="importMode" value="replace">
+                            <strong>Remplacer</strong> - Supprimer toutes les fiches existantes et importer les nouvelles
+                        </label>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelImport">Annuler</button>
+                    <button type="button" class="btn btn-primary" id="confirmImport" style="display: none;">Confirmer l'import</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
