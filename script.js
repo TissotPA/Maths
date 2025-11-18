@@ -3,46 +3,8 @@ let currentTab = 'troisieme';
 let favorites = JSON.parse(localStorage.getItem('mathsFavorites') || '[]');
 let autoPreviewEnabled = JSON.parse(localStorage.getItem('autoPreviewEnabled') || 'true');
 
-// Cartes par défaut de fallback (en cas d'échec du chargement JSON)
-const FALLBACK_CARDS = {
-    "troisieme": [],
-    "seconde": [],
-    "premiere": [
-        {
-            "title": "Polynôme du second degré",
-            "formulas": "On appelle polynôme du second degré toute fonction $f$ de la forme $f(x) = ax^2+bx+c$ avec $a\\neq 0$. La courbe représentative de la fonction $f$ est une **parabole**, admettant un **extremum** (minimum ou maximum).\n++Formes++\nForme développée : $f(x)=ax^2+bx+c$\nForme factorisée : $f(x)=a(x-x_1)(x-x_2)$\nForme canonique : $f(x)=a(x-\\alpha)^2+\\beta$ avec $(\\alpha, \\beta)$ les coordonées de l'extrémum de la courbe. $\\alpha=\\frac{-b}{2a}$ et $\\beta=f(\\alpha)$.\n\n++Discriminant++\nLe discriminant de cette fonction est $\\Delta =b^2-4ac$. Il est utilisé pour calculer les **racines** du polynôme.\n$\\Delta>0$ : deux racines $x_1=\\frac{-b-\\sqrt\\Delta}{2a}$ et $x_2=\\frac{-b+\\sqrt\\Delta}{2a}$\n$\\Delta=0$ : une racine double $x_0=\\frac{-b}{2a}$\n$\\Delta<0$ : pas de racine réelle.",
-            "examples": "",
-            "exercises": [],
-            "timestamp": Date.now(),
-            "isDefault": true
-        }
-    ],
-    "terminale": []
-};
-
-// Chargement des cartes par défaut depuis le JSON externe
-let DEFAULT_CARDS = { ...FALLBACK_CARDS };
-
-// Fonction pour charger les cartes par défaut depuis le fichier JSON
-async function loadDefaultCards() {
-    try {
-        const response = await fetch('./default-cards.json');
-        if (response.ok) {
-            DEFAULT_CARDS = await response.json();
-            console.log('✅ Cartes par défaut chargées depuis default-cards.json');
-        } else {
-            console.log('⚠️ Fichier default-cards.json non trouvé, utilisation des cartes de fallback');
-            DEFAULT_CARDS = { ...FALLBACK_CARDS };
-        }
-    } catch (error) {
-        console.log('❌ Erreur lors du chargement des cartes par défaut:', error);
-        console.log('🔄 Utilisation des cartes de fallback');
-        DEFAULT_CARDS = { ...FALLBACK_CARDS };
-    }
-}
-
-// Initialisation des cartes (fusion des par défaut et localStorage)
-let mathCards = {};
+// Variable globale pour les cartes - chargées depuis localStorage ou import
+let mathCards = JSON.parse(localStorage.getItem('mathCards') || '{"troisieme":[],"seconde":[],"premiere":[],"terminale":[]}');
 
 // Variables pour l'optimisation des performances
 let mathJaxRenderTimeout = null;
@@ -64,9 +26,15 @@ function renderMathJax(element = null) {
         if (window.MathJax && window.MathJax.typesetPromise) {
             const elementsToRender = element ? [element] : Array.from(pendingRenderElements);
             if (elementsToRender.length > 0 || !element) {
-                MathJax.typesetPromise(element ? [element] : elementsToRender).catch(() => {});
+                MathJax.typesetPromise(element ? [element] : elementsToRender).catch((err) => {
+                    console.log('Erreur MathJax:', err);
+                });
                 pendingRenderElements.clear();
             }
+        } else {
+            console.log('MathJax pas encore chargé, nouvelle tentative...');
+            // Réessayer dans 500ms si MathJax n'est pas prêt
+            setTimeout(() => renderMathJax(element), 500);
         }
         mathJaxRenderTimeout = null;
     }, 300); // Attendre 300ms avant de rendre
@@ -85,50 +53,13 @@ function debounce(func, wait) {
     };
 }
 
-// Fonction d'initialisation des cartes (fusion par défaut + localStorage)
-async function initializeMathCards() {
-    // Charger d'abord les cartes par défaut depuis le JSON externe
-    await loadDefaultCards();
-    
-    const localCards = JSON.parse(localStorage.getItem('mathCards') || '{}');
-    const mergedCards = {};
-    
-    // Pour chaque niveau
-    ['troisieme', 'seconde', 'premiere', 'terminale'].forEach(level => {
-        mergedCards[level] = [];
-        
-        // Ajouter les fiches par défaut (marquées comme telles)
-        if (DEFAULT_CARDS[level]) {
-            mergedCards[level].push(...DEFAULT_CARDS[level]);
-        }
-        
-        // Ajouter les fiches personnelles (localStorage)
-        if (localCards[level]) {
-            const personalCards = localCards[level].filter(card => !card.isDefault);
-            mergedCards[level].push(...personalCards);
-        }
-    });
-    
-    console.log('📚 Fiches chargées:', mergedCards);
-    return mergedCards;
-}
-
-// Fonction pour sauvegarder seulement les fiches personnelles
-function savePersonalCards() {
-    const personalCards = {};
-    
-    ['troisieme', 'seconde', 'premiere', 'terminale'].forEach(level => {
-        personalCards[level] = mathCards[level].filter(card => !card.isDefault);
-    });
-    
-    localStorage.setItem('mathCards', JSON.stringify(personalCards));
+// Fonction de sauvegarde simple
+function saveCards() {
+    localStorage.setItem('mathCards', JSON.stringify(mathCards));
 }
 
 // Initialisation au chargement de la page
-document.addEventListener('DOMContentLoaded', async function() {
-    // Initialiser les cartes en premier (chargement du JSON externe)
-    mathCards = await initializeMathCards();
-    
+document.addEventListener('DOMContentLoaded', function() {
     initializeNavigation();
     initializeButtons();
     loadFavorites();
@@ -140,7 +71,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     // Forcer le rendu MathJax après un délai pour s'assurer que tout est chargé
     setTimeout(() => {
-        renderMathJax();
+        if (window.MathJax) {
+            console.log('✅ MathJax chargé et prêt');
+            renderMathJax();
+        } else {
+            console.log('⚠️ MathJax pas encore chargé, nouvelle tentative...');
+            setTimeout(() => renderMathJax(), 1000);
+        }
     }, 500);
 });
 
@@ -1198,10 +1135,10 @@ function showNotification(message) {
 function confirmDeleteCard(card, cardId) {
     // Créer une modal de confirmation
     const confirmModal = document.createElement('div');
-    confirmModal.className = 'modal';
+    confirmModal.className = 'modal confirmation-modal';
     confirmModal.style.display = 'block';
     confirmModal.innerHTML = `
-        <div class="modal-content" style="max-width: 450px; margin: 10% auto;">
+        <div class="modal-content">
             <div class="modal-header">
                 <h3><i class="fas fa-exclamation-triangle" style="color: #e53e3e; margin-right: 8px;"></i> Confirmer la suppression</h3>
             </div>
@@ -1265,7 +1202,7 @@ function deleteCard(card, cardId) {
             mathCards[cardLevel] = mathCards[cardLevel].filter(c => c.title !== cardTitle);
             
             console.log(`Cartes supprimées du localStorage: ${originalLength - mathCards[cardLevel].length}`);
-            savePersonalCards();
+            saveCards();
         }
         
         // Supprimer visuellement des trois onglets
@@ -1383,7 +1320,7 @@ function saveCardToStorage(level, cardData) {
     }
     
     mathCards[level].push(cardData);
-    savePersonalCards();
+    saveCards();
 }
 
 function loadSavedCards() {
@@ -2056,7 +1993,7 @@ function performImport() {
         }
         
         // Sauvegarder dans localStorage
-        savePersonalCards();
+        saveCards();
         localStorage.setItem('mathsFavorites', JSON.stringify(favorites));
         
         // Recharger l'affichage
@@ -2370,7 +2307,7 @@ function updateCardFromForm() {
             removeCardFromAllTabs(level, currentEditingIndex);
         }
         
-        savePersonalCards();
+        saveCards();
     }
     
     // Créer les nouvelles cartes

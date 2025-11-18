@@ -1,0 +1,37 @@
+{
+  "version": "1.0",
+  "exportDate": "2025-11-17T11:43:01.511Z",
+  "appName": "Révisions Maths",
+  "mathCards": {
+    "troisieme": [
+      {
+        "title": "Théorème de Pythagore",
+        "formulas": "Triangle ABC rectangle en A : $BC^2=AB^2+AC^2$",
+        "examples": "**Application directe.**\nSoit un triangle ABC rectangle en A. D'après le théorème de Pythagore, on sait que $BC^2=AB^2+AC^2$.\n\n**Réciproque et contraposée.**\nSoit un triangle ABC.\n++Cas n°1++ : on sait que $BC^2=AB^2+AC^2$, alors d'après la *réciproque* du théorème de Pythagore, ABC est rectangle en A.\n++Cas n°2++ : On sait que $BC^2\\neq AB^2+AC^2$, alors d'après la *contraposée* du théorème de Pythagore, ABC n'est pas rectangle en A.",
+        "exercises": [
+          {
+            "id": 1,
+            "statement": "![Pythagore_1](./Figures/Pythagore1.png)\nCalculer la longueur $ZG$.",
+            "solution": "On sait que $ZAG$ est un triangle rectangle en $Z$. De plus, on sait que $ZA=5.4\\ cm$ et $GA=6.3\\ cm$. Ainsi, d'après le *théorème de Pythagore* : $$\\begin{align}\nAG^2 = AZ^2+ZG^2 &\\Leftrightarrow ZG^2=AG^2-AZ^2 \\\\\n&\\Leftrightarrow ZG^2=6.3^2-5.4^2 \\\\\n&\\Leftrightarrow ZG^2=10.53 \\\\\n&\\Leftrightarrow ZG=\\sqrt{10.53} \\\\\n&\\Leftrightarrow ZG\\simeq3.24\\ \\text{cm}\n\\end{align}$$"
+          },
+          {
+            "id": 2,
+            "statement": "![Pythagore2](./Figures/Pythagore2.png)\nCalculer la longueur $BD$.",
+            "solution": "On sait que le triangle $ABC$ est rectangle en $A$. De plus, on sait que $AB=AC=1\\ cm$. Ainsi d'après le *théorème de Pythagore* : $$\\begin{align}\nBC^2=AB^2+AC^2 &\\Leftrightarrow BC^2=1^2+1^2\\\\\n&\\Leftrightarrow BC^2=2\\\\\n&\\Leftrightarrow BC = \\sqrt 2\n\\end{align}$$\nOn sait que le triangle $BCD$ est rectangle en $C$. De plus, on sait que $CB = CD = \\sqrt 2$. Ainsi, d'après le *théorème de Pythagore* : $$\\begin{align}\nBD^2=CB^2+CD^2&\\Leftrightarrow BC^2=(\\sqrt 2)^2+(\\sqrt 2)^2 \\\\\n&\\Leftrightarrow BC^2=4\\\\\n&\\Rightarrow BC=\\sqrt 4\\\\\n&\\Leftrightarrow BC = 2\n\\end{align}$$\n\nDonc $BD=2\\ cm$."
+          }
+        ],
+        "timestamp": 1763378659600
+      }
+    ],
+    "premiere": [
+      {
+        "title": "Polynôme du second degré",
+        "formulas": "On appelle polynôme du second degré toute fonction $f$ de la forme $f(x) = ax^2+bx+x$ avec $a\\neq 0$. La courbe représentative de la fonction $f$ est une **parabole**, admettant un **extremum** (minimum ou maximum).\n++Formes++\nForme développée : $f(x)=ax^2+bx+c$\nForme factorisée : $f(x)=a(x-x_1)(x-x_2)$\nForme canonique : $f(x)=a(x-\\alpha)^2+\\beta$ avec $(\\alpha, \\beta)$ les coordonées de lextrémum de la courbe. $\\alpha=\\frac{-b}{2a}$ et $\\beta=f(\\alpha)$.\n\n++Discriminant++\nLe discriminant de cette fonction est $\\Delta =b^2-4ac$. Il est utilisé pour calculer les **racines** du polynôme.\n$\\Delta>0$ : deux racines $x_1=\\frac{-b-\\sqrt\\Delta}{2a}$ et $x_2=\\frac{-b+\\sqrt\\Delta}{2a}$\n$\\Delta=0$ : une racine double $x_0=\\frac{-b}{2a}$\n$\\Delta<0$ : pas de racine réelle.",
+        "examples": "",
+        "exercises": [],
+        "timestamp": 1763379304408
+      }
+    ]
+  },
+  "favorites": []
+}
