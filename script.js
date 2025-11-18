@@ -547,12 +547,14 @@ async function loadDefaultCards() {
         // Extraire les données mathCards si elles sont dans ce format
         const cardsData = defaultCards.mathCards || defaultCards;
         
+        // Mettre à jour la variable globale mathCards
+        mathCards = cardsData;
+        
         // Sauvegarder les nouvelles fiches
         localStorage.setItem('mathCards', JSON.stringify(cardsData));
         
         // Recharger l'affichage
         loadSavedCards();
-        updateCardCounts();
         
         // Message de confirmation
         alert('Fiches par défaut chargées avec succès !');
@@ -1343,6 +1345,11 @@ function loadSavedCards() {
         const correctionGrid = document.querySelector(`#${level}-corrections .cards-grid`);
         
         if (ficheGrid && exerciceGrid && correctionGrid && mathCards[level]) {
+            // Vider les grilles avant de recharger pour éviter les doublons
+            ficheGrid.innerHTML = '';
+            exerciceGrid.innerHTML = '';
+            correctionGrid.innerHTML = '';
+            
             mathCards[level].forEach((cardData, index) => {
                 // Créer les trois types de cartes
                 const ficheCard = createFicheCard(cardData.title, cardData.formulas, cardData.examples, cardData.isDefault);
