@@ -162,9 +162,9 @@ function initializeButtons() {
     const favoriteBtn = document.getElementById('favoriteBtn');
     favoriteBtn.addEventListener('click', showFavorites);
 
-    // Bouton d'impression
-    const printBtn = document.getElementById('printBtn');
-    printBtn.addEventListener('click', printCurrentTab);
+    // Bouton de chargement des fiches par défaut
+    const loadBtn = document.getElementById('loadBtn');
+    loadBtn.addEventListener('click', loadDefaultCards);
 
     // Bouton nouvelle fiche
     const addNoteBtn = document.getElementById('addNoteBtn');
@@ -519,42 +519,45 @@ function loadFavorites() {
     // Les favoris sont déjà chargés dans addCardEventListeners
 }
 
-// Impression
-function printCurrentTab() {
-    const currentContent = document.getElementById(currentTab);
-    const printWindow = window.open('', '_blank');
-    
-    printWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Révisions Maths - ${getTabDisplayName(currentTab)}</title>
-            <style>
-                body { font-family: Inter, sans-serif; margin: 20px; }
-                .content-header { text-align: center; margin-bottom: 30px; }
-                .content-header h2 { color: #2f855a; margin-bottom: 10px; }
-                .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-                .card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; break-inside: avoid; }
-                .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; }
-                .card-header h3 { color: #2d3748; }
-                .card-content ul { list-style: disc; margin-left: 20px; }
-                .card-content li { margin: 5px 0; }
-                @page { margin: 2cm; }
-            </style>
-        </head>
-        <body>
-            ${currentContent.innerHTML}
-        </body>
-        </html>
-    `);
-    
-    printWindow.document.close();
-    printWindow.focus();
-    
-    setTimeout(() => {
-        printWindow.print();
-        printWindow.close();
-    }, 250);
+// Chargement des fiches par défaut
+async function loadDefaultCards() {
+    try {
+        // Vérifier si des fiches existent déjà
+        const existingCards = JSON.parse(localStorage.getItem('mathCards') || '{}');
+        const hasExistingCards = Object.keys(existingCards).some(level => 
+            existingCards[level] && existingCards[level].length > 0
+        );
+
+        if (hasExistingCards) {
+            const confirmLoad = confirm('Des fiches existent déjà. Voulez-vous les remplacer par les fiches par défaut ?');
+            if (!confirmLoad) {
+                return;
+            }
+        }
+
+        // Charger le fichier JSON
+        const response = await fetch('./Fiches/fiches.json');
+        
+        if (!response.ok) {
+            throw new Error(`Erreur lors du chargement: ${response.status}`);
+        }
+
+        const defaultCards = await response.json();
+        
+        // Sauvegarder les nouvelles fiches
+        localStorage.setItem('mathCards', JSON.stringify(defaultCards));
+        
+        // Recharger l'affichage
+        loadSavedCards();
+        updateCardCounts();
+        
+        // Message de confirmation
+        alert('Fiches par défaut chargées avec succès !');
+        
+    } catch (error) {
+        console.error('Erreur lors du chargement des fiches par défaut:', error);
+        alert('Erreur lors du chargement des fiches par défaut. Vérifiez que le fichier /Fiches/fiches.json existe.');
+    }
 }
 
 // Gestion de la modal pour ajouter une fiche
@@ -1276,9 +1279,9 @@ document.addEventListener('keydown', function(e) {
                 e.preventDefault();
                 showSearch();
                 break;
-            case 'p':
+            case 'l':
                 e.preventDefault();
-                printCurrentTab();
+                loadDefaultCards();
                 break;
             case '1':
                 e.preventDefault();
