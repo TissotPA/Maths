@@ -3,76 +3,46 @@ let currentTab = 'troisieme';
 let favorites = JSON.parse(localStorage.getItem('mathsFavorites') || '[]');
 let autoPreviewEnabled = JSON.parse(localStorage.getItem('autoPreviewEnabled') || 'true');
 
-// Fiches pré-intégrées (votre contenu)
-const DEFAULT_CARDS = {
+// Cartes par défaut de fallback (en cas d'échec du chargement JSON)
+const FALLBACK_CARDS = {
     "troisieme": [],
     "seconde": [],
     "premiere": [
         {
             "title": "Polynôme du second degré",
-            "formulas": "On appelle polynôme du second degré toute fonction $f$ de la forme $f(x) = ax^2+bx+x$ avec $a\\neq 0$. La courbe représentative de la fonction $f$ est une **parabole**, admettant un **extremum** (minimum ou maximum).\n++Formes++\nForme développée : $f(x)=ax^2+bx+c$\nForme factorisée : $f(x)=a(x-x_1)(x-x_2)$\nForme canonique : $f(x)=a(x-\\alpha)^2+\\beta$ avec $(\\alpha, \\beta)$ les coordonées de l'extrémum de la courbe. $\\alpha=\\frac{-b}{2a}$ et $\\beta=f(\\alpha)$.\n\n++Discriminant++\nLe discriminant de cette fonction est $\\Delta =b^2-4ac$. Il est utilisé pour calculer les **racines** du polynôme.\n$\\Delta>0$ : deux racines $x_1=\\frac{-b-\\sqrt\\Delta}{2a}$ et $x_2=\\frac{-b+\\sqrt\\Delta}{2a}$\n$\\Delta=0$ : une racine double $x_0=\\frac{-b}{2a}$\n$\\Delta<0$ : pas de racine réelle.",
+            "formulas": "On appelle polynôme du second degré toute fonction $f$ de la forme $f(x) = ax^2+bx+c$ avec $a\\neq 0$. La courbe représentative de la fonction $f$ est une **parabole**, admettant un **extremum** (minimum ou maximum).\n++Formes++\nForme développée : $f(x)=ax^2+bx+c$\nForme factorisée : $f(x)=a(x-x_1)(x-x_2)$\nForme canonique : $f(x)=a(x-\\alpha)^2+\\beta$ avec $(\\alpha, \\beta)$ les coordonées de l'extrémum de la courbe. $\\alpha=\\frac{-b}{2a}$ et $\\beta=f(\\alpha)$.\n\n++Discriminant++\nLe discriminant de cette fonction est $\\Delta =b^2-4ac$. Il est utilisé pour calculer les **racines** du polynôme.\n$\\Delta>0$ : deux racines $x_1=\\frac{-b-\\sqrt\\Delta}{2a}$ et $x_2=\\frac{-b+\\sqrt\\Delta}{2a}$\n$\\Delta=0$ : une racine double $x_0=\\frac{-b}{2a}$\n$\\Delta<0$ : pas de racine réelle.",
             "examples": "",
-            "exercises": [
-                {
-                    "id": 1,
-                    "statement": "Résoudre les équations suivantes **(sans utiliser le discriminant)** :\n1) $6x^2+9x=0$\n2) $2(x+1)(3x+2)+(x+1)^2=0$\n3) $(4x-5)^2-(3x+7)(4x-5)=0$\n4) $(2x+3)^2=(3x-2)^2$",
-                    "solution": "1) Factorisation par $x$ :\n$$\\begin{align} 6x^2+9x=0&\\Leftrightarrow x(6x+9)=0\\\\\n&\\Leftrightarrow x=0\\text{ ou }6x+9=0\\\\\n&\\Leftrightarrow x=0\\text{ ou }x=-\\frac3 2\\end{align}$$\nL'ensemble des solutions est $S_1=\\{-\\frac{3}{2};0\\}$.\n\n2) Factorisation par $(x+1)$ :\n$$\\begin{align} 2(x+1)(3x+2)+(x+1)^2=0&\\Leftrightarrow (x+1)(2(3x+2)+(x+1))=0\\\\\n&\\Leftrightarrow  (x+1)(7x+5)=0\\\\\n&\\Leftrightarrow x+1=0\\text{ ou }7x+5=0\\\\\n&\\Leftrightarrow x=-1\\text{ ou }x=-\\frac5 7\n\\end{align}$$\nL'ensemble des solutions est $S_2=\\{-1;-\\frac5 7\\}$.\n\n3) Factorisation pas $(4x-5)$ :\n$$\\begin{align}\n(4x-5)^2-(3x+7)(4x-5)=0&\\Leftrightarrow (4x-5)((4x-5)-(3x+7))=0\\\\\n&\\Leftrightarrow (4x-5)(x-12)=0\\\\\n&\\Leftrightarrow 4x-5=0\\text{ ou }x-12=0\\\\\n&\\Leftrightarrow x=\\frac5 4\\text{ ou } x=12\n\\end{align}$$\nL'ensemble des solutions est $S_3=\\{\\frac5 4;12\\}$\n\n4) Utilisation de l'identité remarquable $a^2-b^2=(a-b)(a+b)$\n$$\\begin{align}\n(2x+3)^2=(3x-2)^2&\\Leftrightarrow (2x+3)^2-(3x-2)^2=0\\\\\n&\\Leftrightarrow ((2x+3)-(3x-2))((2x+3)+(3x-2))\\\\\n&\\Leftrightarrow (-x+5)(5x+1)=0\\\\\n&\\Leftrightarrow -x+5=0\\text{ ou }5x+1=0\\\\\n&\\Leftrightarrow x=5\\text{ ou }x=-\\frac1 5\n\\end{align}$$\nL'ensemble des solutions est $S_4=\\{-\\frac1 5;5\\}$."
-                },
-                {
-                    "id": 2,
-                    "statement": "Résoudre les équations suivantes **(en utilisant le discriminant)** :\n1) $x^2+3x+2=0$\n2) $2x^2-4x+1=0$\n3) $3x^2+5x+7=0$\n4) $4x^2+12x+9=0$\n5) $-5x^2-10x-3=0$\n6) $-2x^2+5x+7=0$\n7) $x^2-\\sqrt2 x-3=0$",
-                    "solution": "1) Le polynôme est bien un polynôme du second degré sous la forme $ax^2+bx+c$ avec $a=1\\neq0$, $b=3$ et $c=2$.\nCalcul du discriminant : $\\Delta=b^2-4ac=3^2-4\\times1\\times2=1$.\n$\\Delta>0$ donc l'équation admet deux solutions réelles distinctes : $$x_1=\\frac{-b-\\sqrt\\Delta}{2a}=\\frac{-3-\\sqrt1}{2\\times1}=-2\\text{ et }x_2=\\frac{-b+\\sqrt\\Delta}{2a}=\\frac{-3+\\sqrt1}{2\\times1}=-1$$\nL'ensemble des solutions est $S_1=\\{-2;-1\\}$.\n\n2) Le polynôme est bien un polynôme du second degré sous la forme $ax^2+bx+c$ avec $a=2\\neq0$, $b=-1$ et $c=1$.\nCalcul du discriminant : $\\Delta=b^2-4ac=8$.\n$\\Delta>0$ donc l'équation admet deux solutions réelles distinctes : $$x_1=\\frac{-b-\\sqrt\\Delta}{2a}=1-\\frac{\\sqrt2} 2\\text{ et }x_2=\\frac{-b+\\sqrt\\Delta}{2a}=1+\\frac{\\sqrt2} 2$$\nL'ensemble des solutions est $S_2=\\{1-\\frac{\\sqrt2} 2;1+\\frac{\\sqrt2} 2\\}$.\n\n3) Le polynôme est bien un polynôme du second degré sous la forme $ax^2+bx+c$ avec $a=3\\neq0$, $b=5$ et $c=7$.\nCalcul du discriminant : $\\Delta=b^2-4ac=-59$.\n$\\Delta<0$ donc l'équation n'admet aucune solution réelle.\nL'ensemble des solutions est $S_3=\\varnothing$.\n\n4) Le polynôme est bien un polynôme du second degré sous la forme $ax^2+bx+c$ avec $a=4\\neq0$, $b=12$ et $c=9$.\nCalcul du discriminant : $\\Delta=b^2-4ac=0$.\n$\\Delta=0$ donc l'équation admet une seule solution réelle double : $$x_0=\\frac{-b}{2a}=-\\frac3 2$$\nL'ensemble des solutions est $S_4=\\{-\\frac3 2\\}$.\n\n5) Le polynôme est bien un polynôme du second degré sous la forme $ax^2+bx+c$ avec $a=-5\\neq0$, $b=-10$ et $c=-3$.\nCalcul du discriminant : $\\Delta=b^2-4ac=40$.\n$\\Delta>0$ donc l'équation admet deux solutions réelles distinctes : $$x_1=\\frac{-b-\\sqrt\\Delta}{2a}=-1-\\frac{\\sqrt{10}} 5\\text{ et }x_2=\\frac{-b+\\sqrt\\Delta}{2a}=-1+\\frac{\\sqrt{10}} 5$$\nL'ensemble des solutions est $S_5=\\{-1-\\frac{\\sqrt{10}} 5;-1+\\frac{\\sqrt{10}} 5\\}$.\n\n6) Le polynôme est bien un polynôme du second degré sous la forme $ax^2+bx+c$ avec $a=-2\\neq0$, $b=5$ et $c=7$.\nCalcul du discriminant : $\\Delta=b^2-4ac=81$.\n$\\Delta>0$ donc l'équation admet deux solutions réelles distinctes : $$x_1=\\frac{-b-\\sqrt\\Delta}{2a}=\\frac7 2\\text{ et }x_2=\\frac{-b+\\sqrt\\Delta}{2a}=-1$$\nL'ensemble des solutions est $S_6=\\{\\frac7 2;-1\\}$.\n\n7) Le polynôme est bien un polynôme du second degré sous la forme $ax^2+bx+c$ avec $a=1\\neq0$, $b=\\sqrt2$ et $c=-3$.\nCalcul du discriminant : $\\Delta=b^2-4ac=14$.\n$\\Delta>0$ donc l'équation admet deux solutions réelles distinctes : $$x_1=\\frac{-b-\\sqrt\\Delta}{2a}=\\frac{\\sqrt2-\\sqrt{14}} 2\\text{ et }x_2=\\frac{-b+\\sqrt\\Delta}{2a}=\\frac{\\sqrt2+\\sqrt{14}} 2$$\nL'ensemble des solutions est $S_7=\\{\\frac{\\sqrt2-\\sqrt{14}} 2;\\frac{\\sqrt2+\\sqrt{14}} 2\\}$."
-                },
-                {
-                    "id": 3,
-                    "statement": "Résoudre les équations suivantes :\n1) $\\frac{4x^2+3x-1}{x+2}=0$\n2) $\\frac{x^2-5x+6}{x^2-9}=0$\n3) $\\frac{-8x^2+6x+2}{x^2+3x-4}=0$\n4) $\\frac3{x-1}+\\frac{4x}{2x-1}=0$",
-                    "solution": "1) Le dénominateur s'annule en $x=-2$ ainsi, le domaine de résolution de l'équation est $\\mathbb{R}\\setminus\\{-2\\}$.\nLe numérateur est bien un polynôme du second degré sous la forme $ax^2+bx+c$ avec $a=4\\neq0$, $b=3$ et $c=-1$.\nCalcul du discriminant : $\\Delta=b^2-4ac=25$.\n$\\Delta>0$ donc l'équation admet deux solutions réelles distinctes : $$x_1=\\frac{-b-\\sqrt\\Delta}{2a}=-1\\text{ et }x_2=\\frac{-b+\\sqrt\\Delta}{2a}=\\frac1 4$$\nL'ensemble des solutions est $S_1=\\{-1;\\frac1 4\\}$.\n\n2) Commençons par calculer les racines du dénominateur : $$\\begin{align} x^2-9=0&\\Leftrightarrow x^2=9\\\\\n&\\Leftrightarrow x=3\\text{ ou }x=-3\n\\end{align}$$\nLe domaine de résolution de l'équation est donc $\\mathbb{R}\\setminus\\{-3;3\\}$.\nLe numérateur est bien un polynôme du second degré sous la forme $ax^2+bx+c$ avec $a=1\\neq0$, $b=-5$ et $c=6$.\nCalcul du discriminant : $\\Delta=b^2-4ac=1$.\n$\\Delta>0$ donc l'équation admet deux solutions réelles distinctes : $$x_1=\\frac{-b-\\sqrt\\Delta}{2a}=2\\text{ et }x_2=\\frac{-b+\\sqrt\\Delta}{2a}=3$$\nComme $3$ ne fait pas partie du domaine de résolution, l'ensemble des solutions est $S_2=\\{2\\}$.\n\n3) Commençons par trouver les racines du dénominateur. Le dénominateur est bien un polynôme du second degré sous la forme $a_dx^2+b_dx+c_d$ avec $a_d=1\\neq0$, $b_d=3$ et $c_d=-4$.\nCalcul du discriminant : $\\Delta_d=b_d^2-4a_dc_d=25$.\n$\\Delta_d>0$ donc l'équation admet deux solutions réelles distinctes : $$x_{1_d}=\\frac{-b_d-\\sqrt\\Delta_d}{2a_d}=-4\\text{ et }x_{2_d}=\\frac{-b_d+\\sqrt\\Delta_d}{2a_d}=1$$\nLe domaine de résolution est donc $\\mathbb{R}\\setminus\\{-4;1\\}$.\nLe numérateur est bien un polynôme du second degré sous la forme $ax^2+bx+c$ avec $a=-8\\neq0$, $b=6$ et $c=2$.\nCalcul du discriminant : $\\Delta=b^2-4ac=100$.\n$\\Delta>0$ donc l'équation admet deux solutions réelles distinctes : $$x_1=\\frac{-b-\\sqrt\\Delta}{2a}=1\\text{ et }x_2=\\frac{-b+\\sqrt\\Delta}{2a}=-\\frac1 4$$\nComme $1$ ne fait pas partie du domaine de résolution, l'ensemble des solutions est $S_3=\\{-\\frac1 4\\}$.\n\n4) Le domaine de résolution de l'équation est $\\mathbb{R}\\setminus\\{\\frac1 2; 1\\}$.\n$$\\begin{align}\n\\frac3{x-1}+\\frac{4x}{2x-1}=0&\\Leftrightarrow \\frac{3(2x-1)+4x(x-1)}{(x-1)(2x-1)}=0\\\\\n&\\Leftrightarrow \\frac{4x^2+2x-3}{(x-1)(2x-1)}=0\n\\end{align}$$\nLe numérateur est bien un polynôme du second degré sous la forme $ax^2+bx+c$ avec $a=4\\neq0$, $b=2$ et $c=-3$.\nCalcul du discriminant : $\\Delta=b^2-4ac=52$.\n$\\Delta>0$ donc l'équation admet deux solutions réelles distinctes : $$x_1=\\frac{-b-\\sqrt\\Delta}{2a}=-\\frac1 4-\\frac{\\sqrt{13}} 4\\text{ et }x_2=\\frac{-b+\\sqrt\\Delta}{2a}=-\\frac1 4+\\frac{\\sqrt{13}} 4$$\nL'ensemble des solutions est $S_4=\\{-\\frac1 4-\\frac{\\sqrt{13}} 4;-\\frac1 4+\\frac{\\sqrt{13}} 4\\}$."
-                },
-                {
-                    "id": 4,
-                    "statement": "Les courbes suivantes représentent des fonctions polynomiales du second degré. Pour chacune d'entre elles, déterminer le signe de $a$ ainsi que le signe du discriminant.\n**Fonction 1**\n![SecondDegre1](./Figures/SecondDegre1.png)\n**Fonction 2**\n![SecondDegre2](./Figures/SecondDegre2.png)\n**Fonction 3**\n![SecondDegre3](./Figures/SecondDegre3.png)",
-                    "solution": "**Fonction 1**\n- Fonction décroissante puis croissante : $a>0$.\n- La courbe coupe deux fois l'axe des abscisses : $\\Delta>0$.\n**Fonction 2**\n- Fonction décroissante puis croissante : $a>0$.\n- La courbe ne coupe pas l'axe des abscisses : $\\Delta<0$.\n**Fonction 1**\n- Fonction croissante puis décroissante : $a<0$.\n- La courbe coupe une seule fois l'axe des abscisses : $\\Delta=0$."
-                },
-                {
-                    "id": 5,
-                    "statement": "Soient les fonctions $f$ et $g$ définies sur $\\mathbb{R}$ telles que $\\forall x\\in\\mathbb{R}, f(x)=x^2-x-2$ et $g(x)=2x+2$. Les courbes de $f$ et $g$ sont données sur le graphique suivant :\n![SecondDegre4](./Figures/SecondDegre4.png)\n1) Quelle est la courbe de $f$ ? Celle de $g$ ?\n2) Résoudre graphiquement $f(x)=0$ sur $\\mathbb{R}$. Retrouver ce résultat par le calcul.\n3) L'équation $f(x)=-3$ semble-t-elle avoir des solutions sur $\\mathbb{R}$ ? Retrouver ce résultat par le calcul.\n4) Résoudre graphiquement $f(x)=g(x)$ sur $\\mathbb{R}$. Retrouver ce résultat par le calcul.",
-                    "solution": "1) La courbe de $f$ est la orange, celle de $g$ la bleue.\n2) La courbe de $f$ coupe l'axe des abscisses en deux points distincts : $x_1=-1$ et $x_2=2$. $f(x)$ est bien un polynôme du second degré sous la forme $ax^2+bx+c$ avec $a=1\\neq0$, $b=-1$ et $c=-2$.\nCalcul du discriminant : $\\Delta=b^2-4ac=9$.\n$\\Delta>0$ donc l'équation admet deux solutions réelles distinctes : $$x_1=\\frac{-b-\\sqrt\\Delta}{2a}=-1\\text{ et }x_2=\\frac{-b+\\sqrt\\Delta}{2a}=2$$\nOn retrouve bien nos deux racines vues sur le graphique.\n3) Graphiquement, $f(x)=-3$ ne semble pas avoir de solutions sur $\\mathbb{R}$, car la courbe de $f$ ne coupe pas l'asymptote horizontale d'équation $y=-3$. Retrouvons ce résultat par le calcul :\n$$\\begin{align}\nf(x)=-3&\\Leftrightarrow x^2-x-2=-3\\\\\n&\\Leftrightarrow x^2-x+1=0\n\\end{align}$$\nOn a bien un polynôme du second degré sous la forme $ax^2+bx+c$ avec $a=1\\neq0$, $b=-1$ et $c=1$.\nCalcul du discriminant : $\\Delta=b^2-4ac=-3$.\n$\\Delta<0$ donc l'équation n'admet pas de solution réelle, comme repéré graphiquement.\n4) Graphiquement, les courbes $f$ et $g$ se coupent en $x=-1$ et $x=4$. Les solutions de $f(x)=g(x)$ semblent donc être $x_1=-1$ et $x_2=4$. Retrouvons le résultat par le calcul :\n$$\\begin{align}\nf(x)=g(x)&\\Leftrightarrow x^2-x-2=2x+2\\\\\n&\\Leftrightarrow x^2-3x-4=0\n\\end{align}$$\nOn a bien un polynôme du second degré sous la forme $ax^2+bx+c$ avec $a=1\\neq0$, $b=-3$ et $c=4$.\nCalcul du discriminant : $\\Delta=b^2-4ac=25$.\n$\\Delta>0$ donc l'équation admet deux solutions réelles distinctes : $$x_1=\\frac{-b-\\sqrt\\Delta}{2a}=-1\\text{ et }x_2=\\frac{-b+\\sqrt\\Delta}{2a}=4$$\nOn retrouve bien les deux points d'intersections repérés sur le graphique."
-                },
-                {
-                    "id": 6,
-                    "statement": "Soit le polynôme $3x^2+8x+4$.\n1) Déterminer la forme factorisée du polynôme.\n2) Déterminer la forme canonique du polynôme.",
-                    "solution": "Le polynôme est un polynôme du second degré sous sa forme développée $ax^2+bx+c$ (avec $a=3$, $b=8$ et $c=4$). Sa forme factorisée est $a(x-x_1)(x-x_2)$ avec $x_1$ et $x_2$ les racines réelles du polynômes. De plus, la forme canonique est de la forme $a(x-\\alpha)^2+\\beta$ avec $\\alpha=\\frac{-b}{2a}$ et $\\beta=a\\alpha^2+b\\alpha+c$.\n1) Résolvons $3x^2+8x+4=0$.\nCalcul du déterminant : $\\Delta=b^2-4ac=16$. $\\Delta>0$ donc le polynôme a deux racines réelles distinctes : $$x_1=\\frac{-b-\\sqrt\\Delta}{2a}=-2\\text{ et }x_2=\\frac{-b+\\sqrt\\Delta}{2a}=-\\frac2 3$$\nOn a donc $3x^2+8x+4=3(x+2)(x+\\frac2 3)$.\n2) Trouvons les coordonnées de l'extremum du polynôme : $\\alpha=\\frac{-b}{2a}=-\\frac4 3$ et $\\beta=a\\alpha^2+b\\alpha+c=\\frac4 3$.\nOn a donc $3x^2+8x+4=3(x+\\frac4 3)^2-\\frac4 3$."
-                },
-                {
-                    "id": 7,
-                    "statement": "On considère la fonction $f$ définie sur $\\mathbb{R}$ telle que $\\forall x\\in\\mathbb{R}$, $f(x)=8x^3-14x^2-7x+6$.\n1) Montrer que $f(2)=0$.\n2) Déterminer les réelles $a$, $b$ et $c$ tels que $\\forall x\\in\\mathbb{R}$, $f(x)=(x-2)(ax^2+bx+c)$.\n3) Résoudre l'équation $f(x)=0$ et donner une forme factorisée de $f$.",
-                    "solution": "1) $f(2)=8\\times2^3-14\\times2^2-7\\times2+6=0$.\n2) Soient $a$b, $b$ et $c$ trois réels tels que :\n$$\\begin{align}\nf(x)=(x-2)(ax^2+bx+c)&\\Leftrightarrow8x^3-14x^2-7x+6=(x-2)(ax^2+bx+c)\\\\\n&\\Leftrightarrow8x^3-14x^2-7x+6=ax^3+(-2a+b)x^2+(-b2+c)x-2c\\\\\n&\\Leftrightarrow a=8\\text{, } b=2\\text{ et }c=-3\\\\\n&\\Leftrightarrow f(x)=(x-2)(8x^2+2x-3)\n\\end{align}$$\n3) On sait déjà que $f(2)=0$. Résolvons $8x^2+2x-3=0$. On bien un polynôme du second degré sous la forme $ax^2+bx+c$ avec $a=8\\neq0$, $b=2$ et $c=-3$.\nCalcul du discriminant : $\\Delta=b^2-4ac=100$.\n$\\Delta>0$ donc l'équation admet deux solutions réelles distinctes : $$x_1=\\frac{-b-\\sqrt\\Delta}{2a}=-\\frac3 4\\text{ et }x_2=\\frac{-b+\\sqrt\\Delta}{2a}=\\frac1 2$$\nLes solutions sont donc $S=\\{-\\frac3 4: \\frac1 2; 2\\}$.\n\nOn a donc une forme factorisée de $f$ telle que $\\forall x\\in\\mathbb{R}$, $f(x)=(x+\\frac3 4)(x-\\frac1 2)(x-2)$."
-                },
-                {
-                    "id": 8,
-                    "statement": "Les courbes suivantes sont les représentations graphiques de polynômes du second degré. Dans chaque cas, déterminer la forme factorisée et la forme canonique du polynôme associé.\n**Fonction** $f$\n![SecondDegre5](./Figures/SecondDegre5.png)\n**Fonction** $g$\n![SecondDegre6](./Figures/SecondDegre6.png)\n**Fonction** $h$\n![SecondDegre7](./Figures/SecondDegre7.png)",
-                    "solution": "**Fonction** $f$\nLa fonction s'annule en $x=1$ et $x=3$. Son expression est donc sous la forme $f(x)=a(x-1)(x-3)$. De plus, on voit que l'extrémum de la fonction est atteint en $x=2$ avec $f(2)=-1$, ainsi $a(2-1)(2-3)=-1\\Leftrightarrow a=1$.\n++Forme factorisée++ : $f(x)=(x-1)(x-3)$.\n++Forme canonique++ : $f(x)=(x-2)^2-1$.\n\n**Fonction** $g$\nLa fonction s'annule en $x=-2$ et $x=2$. Son expression est donc sous la forme $g(x)=a(x+2)(x-2)$. De plus, on voit que l'extrémum de la fonction est atteint en $x=0$ avec $g(0)=-2$, ainsi $a(0+2)(0-2)=-2\\Leftrightarrow a=\\frac1 2$.\n++Forme factorisée++ : $g(x)=\\frac1 2(x+2)(x-2)$.\n++Forme canonique++ : $g(x)=\\frac1 2 x^2-2$.\n\n**Fonction** $h$\nLa fonction s'annule en $x=-1$ et $x=3$. Son expression est donc sous la forme $h(x)=a(x+1)(x-3)$. De plus, on voit que l'extrémum de la fonction est atteint en $x=1$ avec $h(1)=4$, ainsi $a(1+1)(1-3)=4\\Leftrightarrow a=-1$.\n++Forme factorisée++ : $h(x)=-(x+1)(x-3)$.\n++Forme canonique++ : $h(x)=-(x-1)^2+4$."
-                },
-                {
-                    "id": 9,
-                    "statement": "Résoudre sur $\\mathbb{R}$ les inéquations suivantes :\n1) $x^2-5x+6>0$\n2) $2x^2+3x-5\\leq0$\n3) $-5x^2+6x-1\\geq0$\n4) $-8x^2+7x-4>0$\nDonner les domaines de définitions des fonctions suivantes : \n5) $f(x)=\\sqrt{2x^2+7x+3}$\n6) $g(x)=\\frac{3x+7}{\\sqrt{-2x^2-9x+11}}$",
-                    "solution": "1) Le polynôme est bien un polynôme du second degré sous la forme $ax^2+bx+c$ avec $a=1\\neq0$, $b=-5$ et $c=6$.\nCalcul du discriminant : $\\Delta=b^2-4ac=1$.\n$\\Delta>0$ donc l'équation admet deux solutions réelles distinctes : $$x_1=\\frac{-b-\\sqrt\\Delta}{2a}=2\\text{ et }x_2=\\frac{-b+\\sqrt\\Delta}{2a}=3$$\nNous pouvons ainsi construire le tableau de signe suivant, avec $a>0$ :\n![SecondDegre8](./Figures/SecondDegre8.png)\nLes solutions de l'inéquation sont donc $S=]-\\infty;2[\\cup]3;+\\infty[$.\n2) Le polynôme est bien un polynôme du second degré sous la forme $ax^2+bx+c$ avec $a=2\\neq0$, $b=3$ et $c=-5$.\nCalcul du discriminant : $\\Delta=b^2-4ac=49$.\n$\\Delta>0$ donc l'équation admet deux solutions réelles distinctes : $$x_1=\\frac{-b-\\sqrt\\Delta}{2a}=-\\frac5 2\\text{ et }x_2=\\frac{-b+\\sqrt\\Delta}{2a}=1$$\nNous pouvons ainsi construire le tableau de signe suivant, avec $a>0$ :\n![SecondDegre9](./Figures/SecondDegre9.png)\nLes solutions de l'inéquation sont donc $S=[-\\frac5 2;1]$.\n3) Le polynôme est bien un polynôme du second degré sous la forme $ax^2+bx+c$ avec $a=-5\\neq0$, $b=6$ et $c=-1$.\nCalcul du discriminant : $\\Delta=b^2-4ac=16$.\n$\\Delta>0$ donc l'équation admet deux solutions réelles distinctes : $$x_1=\\frac{-b-\\sqrt\\Delta}{2a}=1\\text{ et }x_2=\\frac{-b+\\sqrt\\Delta}{2a}=\\frac1 5$$\nNous pouvons ainsi construire le tableau de signe suivant, avec $a<0$ :\n![SecondDegre10](./Figures/SecondDegre10.png)\nLes solutions de l'inéquation sont donc $S=[\\frac1 5;1]$.\n4) Le polynôme est bien un polynôme du second degré sous la forme $ax^2+bx+c$ avec $a=-8\\neq0$, $b=7$ et $c=-4$.\nCalcul du discriminant : $\\Delta=b^2-4ac=-15$.\n$\\Delta<0$ donc l'équation n'admet aucune solution réelle. Nous pouvons ainsi construire le tableau de signe suivant, avec $a<0$ :\n![SecondDegre11](./Figures/SecondDegre11.png)\nIl n'y a aucune solution à l'inéquation.\n5) $f$ n'est définie que si $2x^2+7x+3\\geq0$. Le polynôme est bien un polynôme du second degré sous la forme $ax^2+bx+c$ avec $a=2\\neq0$, $b=7$ et $c=3$.\nCalcul du discriminant : $\\Delta=b^2-4ac=25$.\n$\\Delta>0$ donc l'équation admet deux solutions réelles distinctes : $$x_1=\\frac{-b-\\sqrt\\Delta}{2a}=-3\\text{ et }x_2=\\frac{-b+\\sqrt\\Delta}{2a}=-\\frac1 2$$\nNous pouvons ainsi construire le tableau de signe suivant, avec $a>0$ :\n![SecondDegre12](./Figures/SecondDegre12.png)\nLe domaine de définition de $f$ est donc $]-infty; -3]\\cup[-\\frac1 2;+\\infty[$.\n6) $g$ n'est définie que si $-2x^2-9x+11>0$. Le polynôme est bien un polynôme du second degré sous la forme $ax^2+bx+c$ avec $a=-2\\neq0$, $b=-9$ et $c=11$.\nCalcul du discriminant : $\\Delta=b^2-4ac=169$.\n$\\Delta>0$ donc l'équation admet deux solutions réelles distinctes : $$x_1=\\frac{-b-\\sqrt\\Delta}{2a}=1\\text{ et }x_2=\\frac{-b+\\sqrt\\Delta}{2a}=-\\frac{11} 2$$\nNous pouvons ainsi construire le tableau de signe suivant, avec $a<0$ :\n![SecondDegre13](./Figures/SecondDegre13.png)\nLe domaine de définition de $g$ est donc $]-\\frac{11} 2; 1[$."
-                },
-                {
-                    "id": 10,
-                    "statement": "Soit $m$ un réel. On considère l'équation $(E)$, d'inconnue $x\\in\\mathbb{R}$ suivante : $$(E): 2x^2+mx+x+\\frac5 2=0$$\nDéterminer, selon $m$, le nombre de solutions de $(E)$.",
-                    "solution": "Le polynôme est bien un polynôme du second degré sous la forme $ax^2+bx+c$ avec $a=2$, $b=m$ et $c=m+\\frac 5 2$.\nCalcul du discriminant : $\\Delta=m^2-4\\times2\\times(m+\\frac5 2)=m^2-8m-20$. Il faut donc étudier le signe de ce discriminant. Le discriminant est bien un polynôme du second degré sous la forme $a_\\Delta x^2+b_\\Delta x+c_\\Delta$ avec $a_\\Delta=1$, $b_\\Delta=-8$ et $c_\\Delta=-20$.\nCalcul du discriminant : $\\Delta_\\Delta=b_\\Delta^2-4a_\\Delta c_\\Delta=144$.\n$\\Delta_\\Delta>0$ donc l'équation admet deux solutions réelles distinctes : $$x_{1_\\Delta}=\\frac{-b_\\Delta-\\sqrt{\\Delta_\\Delta}}{2a_\\Delta}=-2\\text{ et }x_{2_\\Delta}=\\frac{-b_\\Delta+\\sqrt{\\Delta_\\Delta}}{2a_\\Delta}=10$$\nNous pouvons ainsi construire le tableau de signe suivant, avec $a_\\Delta>0$ :\n![SecondDegre14](./Figures/SecondDegre14.png)\n**Conclusion**\n- Si $m\\in]-\\infty;2[\\cup]10;+\\infty[$, $(E)$ admet deux solutions réelles.\n- Si $m=-2$ ou $m=10$, $(E)$ admet une unique solution double.\n- Si $m\\in]2;10[$, $(E)$ n'admet aucune solution réelle."
-                }
-            ],
-            "timestamp": 1763471507468,
+            "exercises": [],
+            "timestamp": Date.now(),
             "isDefault": true
         }
     ],
     "terminale": []
 };
 
+// Chargement des cartes par défaut depuis le JSON externe
+let DEFAULT_CARDS = { ...FALLBACK_CARDS };
+
+// Fonction pour charger les cartes par défaut depuis le fichier JSON
+async function loadDefaultCards() {
+    try {
+        const response = await fetch('./default-cards.json');
+        if (response.ok) {
+            DEFAULT_CARDS = await response.json();
+            console.log('✅ Cartes par défaut chargées depuis default-cards.json');
+        } else {
+            console.log('⚠️ Fichier default-cards.json non trouvé, utilisation des cartes de fallback');
+            DEFAULT_CARDS = { ...FALLBACK_CARDS };
+        }
+    } catch (error) {
+        console.log('❌ Erreur lors du chargement des cartes par défaut:', error);
+        console.log('🔄 Utilisation des cartes de fallback');
+        DEFAULT_CARDS = { ...FALLBACK_CARDS };
+    }
+}
+
 // Initialisation des cartes (fusion des par défaut et localStorage)
-let mathCards = initializeMathCards();
+let mathCards = {};
 
 // Variables pour l'optimisation des performances
 let mathJaxRenderTimeout = null;
@@ -116,7 +86,10 @@ function debounce(func, wait) {
 }
 
 // Fonction d'initialisation des cartes (fusion par défaut + localStorage)
-function initializeMathCards() {
+async function initializeMathCards() {
+    // Charger d'abord les cartes par défaut depuis le JSON externe
+    await loadDefaultCards();
+    
     const localCards = JSON.parse(localStorage.getItem('mathCards') || '{}');
     const mergedCards = {};
     
@@ -152,7 +125,10 @@ function savePersonalCards() {
 }
 
 // Initialisation au chargement de la page
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+    // Initialiser les cartes en premier (chargement du JSON externe)
+    mathCards = await initializeMathCards();
+    
     initializeNavigation();
     initializeButtons();
     loadFavorites();
