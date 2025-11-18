@@ -544,8 +544,11 @@ async function loadDefaultCards() {
 
         const defaultCards = await response.json();
         
+        // Extraire les données mathCards si elles sont dans ce format
+        const cardsData = defaultCards.mathCards || defaultCards;
+        
         // Sauvegarder les nouvelles fiches
-        localStorage.setItem('mathCards', JSON.stringify(defaultCards));
+        localStorage.setItem('mathCards', JSON.stringify(cardsData));
         
         // Recharger l'affichage
         loadSavedCards();
@@ -556,7 +559,14 @@ async function loadDefaultCards() {
         
     } catch (error) {
         console.error('Erreur lors du chargement des fiches par défaut:', error);
-        alert('Erreur lors du chargement des fiches par défaut. Vérifiez que le fichier /Fiches/fiches.json existe.');
+        
+        if (error.message.includes('404')) {
+            alert('Le fichier Fiches/fiches.json n\'a pas été trouvé sur le serveur.\n\nVérifiez que le fichier est bien présent sur GitHub Pages.');
+        } else if (error.message.includes('Failed to fetch')) {
+            alert('Impossible de se connecter au serveur.\n\nVérifiez votre connexion internet et que vous êtes sur GitHub Pages.');
+        } else {
+            alert(`Erreur lors du chargement des fiches par défaut:\n${error.message}\n\nConsultez la console pour plus de détails.`);
+        }
     }
 }
 
@@ -1903,8 +1913,11 @@ function handleImportFile(event) {
 }
 
 function showImportPreview(importData) {
+    // Détecter le format des données (nouveau format avec mathCards ou ancien format direct)
+    const cardsData = importData.mathCards || importData;
+    
     // Valider la structure des données
-    if (!importData.mathCards || typeof importData.mathCards !== 'object') {
+    if (!cardsData || typeof cardsData !== 'object') {
         alert('Erreur : Le fichier ne contient pas de données de fiches valides.');
         return;
     }
@@ -1913,8 +1926,8 @@ function showImportPreview(importData) {
     let totalCards = 0;
     const levelStats = {};
     
-    Object.keys(importData.mathCards).forEach(level => {
-        const cards = importData.mathCards[level];
+    Object.keys(cardsData).forEach(level => {
+        const cards = cardsData[level];
         if (Array.isArray(cards)) {
             levelStats[level] = cards.length;
             totalCards += cards.length;
@@ -1972,17 +1985,20 @@ function performImport() {
         const importData = window.pendingImportData;
         const mode = document.querySelector('input[name="importMode"]:checked').value;
         
+        // Extraire les données dans le bon format
+        const cardsData = importData.mathCards || importData;
+        
         if (mode === 'replace') {
             // Remplacer toutes les données
-            mathCards = importData.mathCards || {};
+            mathCards = cardsData;
             favorites = importData.favorites || [];
         } else {
             // Fusionner les données
-            Object.keys(importData.mathCards).forEach(level => {
+            Object.keys(cardsData).forEach(level => {
                 if (!mathCards[level]) {
                     mathCards[level] = [];
                 }
-                mathCards[level] = mathCards[level].concat(importData.mathCards[level] || []);
+                mathCards[level] = mathCards[level].concat(cardsData[level] || []);
             });
             
             if (importData.favorites && Array.isArray(importData.favorites)) {

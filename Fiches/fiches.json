@@ -1,7 +1,8 @@
 {
-  "troisieme": [],
-  "seconde": [],
-  "premiere": [
+  "mathCards": {
+    "troisieme": [],
+    "seconde": [],
+    "premiere": [
     {
       "title": "Polynôme du second degré",
       "formulas": "On appelle polynômes du second degré toute fonction $f$ de la forme $f(x) = ax^2+bx+x$ avec $a\\neq 0$. La courbe représentative de la fonction $f$ est une **parabole**, admettant un **extremum** (minimum ou maximum).\n++Formes++\nForme développée : $f(x)=ax^2+bx+c$\nForme factorisée : $f(x)=a(x-x_1)(x-x_2)$\nForme canonique : $f(x)=a(x-\\alpha)^2+\\beta$ avec $(\\alpha, \\beta)$ les coordonées de l'extrémum de la courbe. $\\alpha=\\frac{-b}{2a}$ et $\\beta=f(\\alpha)$.\n\n++Discriminant++\nLe discriminant de cette fonction est $\\Delta =b^2-4ac$. Il est utilisé pour calculer les **racines** du polynôme.\n$\\Delta>0$ : deux racines $x_1=\\frac{-b-\\sqrt\\Delta}{2a}$ et $x_2=\\frac{-b+\\sqrt\\Delta}{2a}$\n$\\Delta=0$ : une racine double $x_0=\\frac{-b}{2a}$\n$\\Delta<0$ : pas de racine réelle.",
@@ -63,4 +64,5 @@
     }
   ],
   "terminale": []
+  }
 }
