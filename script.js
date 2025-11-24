@@ -544,8 +544,16 @@ async function loadDefaultCards() {
 
         const defaultCards = await response.json();
         
+        console.log('Données JSON reçues:', defaultCards);
+        
         // Extraire les données mathCards si elles sont dans ce format
         const cardsData = defaultCards.mathCards || defaultCards;
+        
+        console.log('Données extraites:', cardsData);
+        console.log('Nombre de fiches par niveau:');
+        Object.keys(cardsData).forEach(level => {
+            console.log(`- ${level}: ${cardsData[level] ? cardsData[level].length : 0} fiches`);
+        });
         
         // Mettre à jour la variable globale mathCards
         mathCards = cardsData;
@@ -553,8 +561,12 @@ async function loadDefaultCards() {
         // Sauvegarder les nouvelles fiches
         localStorage.setItem('mathCards', JSON.stringify(cardsData));
         
+        console.log('Fiches sauvegardées dans localStorage');
+        
         // Recharger l'affichage
         loadSavedCards();
+        
+        console.log('Affichage rechargé');
         
         // Message de confirmation
         alert('Fiches par défaut chargées avec succès !');
@@ -1408,10 +1420,20 @@ function saveCardToStorage(level, cardData) {
 }
 
 function loadSavedCards() {
+    console.log('loadSavedCards - Début du chargement');
+    console.log('mathCards:', mathCards);
+    
     Object.keys(mathCards).forEach(level => {
         const ficheGrid = document.querySelector(`#${level}-fiches .cards-grid`);
         const exerciceGrid = document.querySelector(`#${level}-exercices .cards-grid`);
         const correctionGrid = document.querySelector(`#${level}-corrections .cards-grid`);
+        
+        console.log(`Niveau ${level}:`, {
+            ficheGrid: !!ficheGrid,
+            exerciceGrid: !!exerciceGrid,
+            correctionGrid: !!correctionGrid,
+            cardsCount: mathCards[level] ? mathCards[level].length : 0
+        });
         
         if (ficheGrid && exerciceGrid && correctionGrid && mathCards[level]) {
             // Vider les grilles avant de recharger pour éviter les doublons
@@ -1419,7 +1441,11 @@ function loadSavedCards() {
             exerciceGrid.innerHTML = '';
             correctionGrid.innerHTML = '';
             
+            console.log(`Création de ${mathCards[level].length} cartes pour ${level}`);
+            
             mathCards[level].forEach((cardData, index) => {
+                console.log(`Carte ${index + 1}/${mathCards[level].length}:`, cardData.title);
+                
                 // Créer les trois types de cartes
                 const ficheCard = createFicheCard(cardData.title, cardData.formulas, cardData.examples, cardData.isDefault);
                 const exerciceCard = createExerciceCard(cardData.title, cardData.exercises);
@@ -1437,6 +1463,8 @@ function loadSavedCards() {
             });
         }
     });
+    
+    console.log('loadSavedCards - Fin du chargement');
     
     // Re-render MathJax après le chargement
     setTimeout(() => {
