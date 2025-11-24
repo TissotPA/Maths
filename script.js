@@ -901,7 +901,7 @@ function createFicheCard(title, formulas, examples, isDefault = false) {
     if (formulas) {
         contentSections += `
             <div class="math-section">
-                <h4><i class="fas fa-calculator"></i> Formules principales</h4>
+                <h4><i class="fas fa-calculator"></i> Cours</h4>
                 <div class="math-formula">${convertNewlinesToHTML(formulas)}</div>
             </div>
         `;
@@ -918,16 +918,27 @@ function createFicheCard(title, formulas, examples, isDefault = false) {
     
     const defaultBadge = isDefault ? '<span class="default-badge"><i class="fas fa-graduation-cap"></i> Cours</span>' : '';
     
+    // Générer un ID unique pour cette carte
+    const cardId = `fiche-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    
     card.innerHTML = `
         <div class="card-header">
             <i class="fas fa-book-open"></i>
             <h3>${title}</h3>
             ${defaultBadge}
+            <i class="fas fa-chevron-down toggle-chevron"></i>
         </div>
-        <div class="card-content">
+        <div class="card-content" id="${cardId}">
             ${contentSections || '<p>Fiche en cours de rédaction...</p>'}
         </div>
     `;
+    
+    // Ajouter l'event listener pour le toggle
+    const header = card.querySelector('.card-header');
+    header.addEventListener('click', function(e) {
+        e.stopPropagation();
+        toggleCardContent(cardId, this);
+    });
     
     return card;
 }
@@ -949,15 +960,26 @@ function createExerciceCard(title, exercises) {
         exerciceContent = '<p>Aucun exercice associé à cette fiche.</p>';
     }
     
+    // Générer un ID unique pour cette carte
+    const cardId = `exercice-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    
     card.innerHTML = `
         <div class="card-header">
             <i class="fas fa-tasks"></i>
             <h3>${title}</h3>
+            <i class="fas fa-chevron-down toggle-chevron"></i>
         </div>
-        <div class="card-content">
+        <div class="card-content" id="${cardId}">
             ${exerciceContent}
         </div>
     `;
+    
+    // Ajouter l'event listener pour le toggle
+    const header = card.querySelector('.card-header');
+    header.addEventListener('click', function(e) {
+        e.stopPropagation();
+        toggleCardContent(cardId, this);
+    });
     
     return card;
 }
@@ -990,15 +1012,26 @@ function createCorrectionCard(title, exercises) {
         correctionContent = '<p>Aucune correction disponible.</p>';
     }
     
+    // Générer un ID unique pour cette carte
+    const correctionCardId = `correction-card-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    
     card.innerHTML = `
         <div class="card-header">
             <i class="fas fa-clipboard-check"></i>
             <h3>${title}</h3>
+            <i class="fas fa-chevron-down toggle-chevron"></i>
         </div>
-        <div class="card-content">
+        <div class="card-content" id="${correctionCardId}">
             ${correctionContent}
         </div>
     `;
+    
+    // Ajouter l'event listener pour le toggle
+    const header = card.querySelector('.card-header');
+    header.addEventListener('click', function(e) {
+        e.stopPropagation();
+        toggleCardContent(correctionCardId, this);
+    });
     
     return card;
 }
@@ -1102,6 +1135,42 @@ function getTabDisplayName(tabId) {
         'terminale': 'Terminale'
     };
     return names[tabId] || tabId;
+}
+
+// Fonction pour plier/déplier le contenu des cartes
+function toggleCardContent(cardId, headerElement) {
+    const content = document.getElementById(cardId);
+    const chevron = headerElement.querySelector('.toggle-chevron');
+    
+    if (!content || !chevron) return;
+    
+    // Toggle de l'affichage avec animation
+    if (content.classList.contains('show')) {
+        // Fermer la carte
+        chevron.style.transform = 'rotate(0deg)';
+        content.style.maxHeight = content.scrollHeight + 'px';
+        
+        // Force reflow
+        setTimeout(() => {
+            content.style.maxHeight = '0';
+        }, 10);
+        
+        setTimeout(() => {
+            content.classList.remove('show');
+        }, 300);
+    } else {
+        // Ouvrir la carte
+        content.classList.add('show');
+        content.style.maxHeight = content.scrollHeight + 'px';
+        chevron.style.transform = 'rotate(180deg)';
+        
+        // Re-render MathJax pour le contenu nouvellement visible
+        setTimeout(() => {
+            renderMathJax(content);
+            // Retirer max-height après l'animation pour permettre le scroll
+            content.style.maxHeight = 'none';
+        }, 350);
+    }
 }
 
 function showNotification(message) {
